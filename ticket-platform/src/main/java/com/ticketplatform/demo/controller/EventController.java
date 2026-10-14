@@ -16,6 +16,8 @@ import org.springframework.web.bind.annotation.RestController;
 import com.ticketplatform.demo.entity.Event;
 import com.ticketplatform.demo.service.EventService;
 
+import jakarta.validation.Valid;
+
 @RestController
 @RequestMapping("/api/events")
 public class EventController {
@@ -27,7 +29,7 @@ public class EventController {
 	}
 	
 	@PostMapping
-	public ResponseEntity<Event> createEvent(@RequestBody Event event){
+	public ResponseEntity<Event> createEvent(@Valid @RequestBody Event event){
 		Event createEvent = eventService.addEvent(event);
 		return new ResponseEntity<>(createEvent, HttpStatus.CREATED);
 	}
