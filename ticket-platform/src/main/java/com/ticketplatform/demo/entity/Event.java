@@ -17,11 +17,8 @@ import jakarta.persistence.Table;
 public class Event {
 
 	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY/*, generator = "idCreation"*/ )
-	//@SequenceGenerator(name = "idCreation", initialValue = 100 ,allocationSize = 1)
-	/*CREATE TABLE events(
-			id BIGSERIAL PRIMARY KEY,
-			creates id automatically*/
+	@GeneratedValue(strategy = GenerationType.IDENTITY )
+	
 	private Long id;
 	private String title;
 	private String description;

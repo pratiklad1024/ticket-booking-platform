@@ -13,7 +13,6 @@ public class EventService {
 	private EventRepository eventRepository;
 
 	public EventService(EventRepository eventRepository) {
-		System.out.println("Event service constructor");
 		this.eventRepository = eventRepository;
 	}
 	

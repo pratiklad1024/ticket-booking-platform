@@ -23,7 +23,6 @@ public class EventController {
 	private EventService eventService;
 
 	public EventController(EventService eventService) {
-		System.out.println("EventController constructor");
 		this.eventService = eventService;
 	}
 	
