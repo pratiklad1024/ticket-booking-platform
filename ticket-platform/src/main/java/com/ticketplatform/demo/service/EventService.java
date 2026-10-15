@@ -3,7 +3,10 @@ package com.ticketplatform.demo.service;
 import java.util.List;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import com.ticketplatform.demo.dto.EventRequest;
+import com.ticketplatform.demo.dto.EventResponse;
 import com.ticketplatform.demo.entity.Event;
 import com.ticketplatform.demo.repository.EventRepository;
 
@@ -16,19 +19,39 @@ public class EventService {
 		this.eventRepository = eventRepository;
 	}
 	
-	public Event addEvent(Event event) {
-		return eventRepository.save(event);
+	@Transactional
+	public EventResponse addEvent(EventRequest event) {
+		return toResponse(eventRepository.save(toEntity(event)));
 	}
 	
-	public List<Event> findAllEvents(){
-		return eventRepository.findAll();
+	@Transactional(readOnly = true)
+	public List<EventResponse> findAllEvents(){
+		return eventRepository.findAll().stream()
+							  .map(this :: toResponse)
+							  .toList();
 	}
 	
-	public Event findEventById(Long id) {
-		return eventRepository.findById(id).get();//Optional<T>
+	@Transactional(readOnly = true)
+	public EventResponse findEventById(Long id) {
+		Event event = eventRepository.findById(id)
+					.orElseThrow(() -> new RuntimeException("Event not found with id "+ id));//Optional<T>
+			return toResponse(event);
 	}
 	
+	private Event toEntity(EventRequest eventRequest) {
+		Event event = new Event();
+		event.setTitle(eventRequest.title());
+		event.setDescription(eventRequest.description());
+		event.setVenue(eventRequest.venue());
+		event.setTotalSeats(eventRequest.totalSeats());
+		event.setEventDate(eventRequest.eventDate());
+		return event;
+	}
 	
+	private EventResponse toResponse(Event event) {
+		return new EventResponse(event.getId(), event.getTitle(), event.getDescription(),
+				event.getVenue(), event.getEventDate(), event.getTotalSeats());
+	}
 	
 	
 }
