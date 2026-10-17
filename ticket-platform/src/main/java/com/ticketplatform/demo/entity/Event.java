@@ -3,6 +3,9 @@ package com.ticketplatform.demo.entity;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
+
 import jakarta.annotation.Generated;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -34,9 +37,11 @@ public class Event {
 	private long totalSeats;
 	
 	@Column(name = "creationtime")
+	@CreationTimestamp
 	private LocalDateTime creationTime;
 	
 	@Column(name = "updatedtime")
+	@UpdateTimestamp
 	private LocalDateTime updationTime;
 	
 	public Event() {

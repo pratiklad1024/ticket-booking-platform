@@ -1,5 +1,6 @@
 package com.ticketplatform.demo.service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.stereotype.Service;
@@ -8,6 +9,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.ticketplatform.demo.dto.EventRequest;
 import com.ticketplatform.demo.dto.EventResponse;
 import com.ticketplatform.demo.entity.Event;
+import com.ticketplatform.demo.exception.EventNotFoundException;
 import com.ticketplatform.demo.repository.EventRepository;
 
 @Service
@@ -31,10 +33,19 @@ public class EventService {
 							  .toList();
 	}
 	
+//	public List<EventResponse> findAllEvents(){
+//		List<Event> events = eventRepository.findAll();
+//		List<EventResponse> eventResponse = new ArrayList<>();
+//			for(Event event : events) {
+//				eventResponse.add(toResponse(event));
+//			}
+//			return eventResponse;
+//	}
+	
 	@Transactional(readOnly = true)
 	public EventResponse findEventById(Long id) {
 		Event event = eventRepository.findById(id)
-					.orElseThrow(() -> new RuntimeException("Event not found with id "+ id));//Optional<T>
+					.orElseThrow(() -> new EventNotFoundException(id));//Optional<T>
 			return toResponse(event);
 	}
 	
