@@ -26,7 +26,7 @@ public record EventResponse(
 		return eventDate;
 	}
 
-	public long totoalSeats() {
+	public long totalSeats() {
 		return totoalSeats;
 	}
 	

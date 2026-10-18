@@ -6,12 +6,13 @@ import java.util.List;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.ticketplatform.demo.dto.EventRequest;
@@ -31,7 +32,6 @@ public class EventController {
 	}
 	
 	@PostMapping
-	
 	public ResponseEntity<EventResponse> createEvent(@Valid @RequestBody EventRequest event){
 		EventResponse createEvent = eventService.addEvent(event);
 		return new ResponseEntity<>(createEvent, HttpStatus.CREATED);
@@ -47,6 +47,18 @@ public class EventController {
 	public ResponseEntity<List<EventResponse>> findAllEvents(){
 		List<EventResponse> allEvents = eventService.findAllEvents();
 		return new ResponseEntity<>(allEvents, HttpStatus.OK);
+	}
+	
+	@PutMapping("/{id}")
+	public ResponseEntity<EventResponse> updateEvent(@PathVariable Long id, @Valid @RequestBody EventRequest eventRequest){
+		EventResponse response = eventService.updateEvent(id, eventRequest);
+		return ResponseEntity.ok(response);
+	}  
+	
+	@DeleteMapping("/{id}")
+	public ResponseEntity<Void> deleteEvent(@PathVariable Long id){
+		eventService.deleteEvent(id);
+		return ResponseEntity.noContent().build();
 	}
 	
 	

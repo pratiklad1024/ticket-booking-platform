@@ -4,6 +4,7 @@ package com.ticketplatform.demo.service;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -47,7 +48,7 @@ public class EventServiceTest {
 		
 		EventResponse response = eventService.addEvent(request);
 		
-		assertEquals(1L, response.id());
+		assertEquals(2L, response.id());
 		assertEquals("Rock Concert", response.title());
 		verify(eventRepository).save(any(Event.class));
 	}
@@ -60,7 +61,7 @@ public class EventServiceTest {
 		
 		when(eventRepository.findById(2L)).thenReturn(Optional.of(event));
 		
-		EventResponse response = eventService.findEventById(1L);
+		EventResponse response = eventService.findEventById(2L);
 		assertEquals("Rock Concert", response.title());
 	}
 	
@@ -86,4 +87,63 @@ public class EventServiceTest {
 		assertEquals(1, result.size());
 		assertEquals("Rock Concert", result.get(0).title());
 	}
+	
+	@Test
+	void updateEvent_whenExists_updateFields() {
+		Long id = 3L;
+		EventRequest request = new EventRequest("Super Bowl", "Football League", "Arena", LocalDateTime.now().plusDays(23), 88);
+		Event event = new Event();
+		event.setId(3L);
+		event.setTitle("Bruno Mars Concert");
+		event.setVenue("City Arena");
+		event.setTotalSeats(200);
+		
+		when(eventRepository.findById(id)).thenReturn(Optional.of(event));
+		
+	    EventResponse response = eventService.updateEvent(id, request);
+	   
+	    assertEquals(response.id(), id);
+	    assertEquals(response.title(), request.title());
+	    assertEquals(response.description(), request.description());
+	    assertEquals(response.venue(), request.venue());
+	    assertEquals(response.totalSeats(), request.totalSeats());
+	}
+	
+	@Test
+	void updateEvent_whenMissing_throwsNotFound() {
+		Long id = 3L;
+		EventRequest request = new EventRequest("Super Bowl", "Football League", "Arena", LocalDateTime.now().plusDays(23), 88);
+		
+		
+		when(eventRepository.findById(id)).thenReturn(Optional.empty());
+		
+		
+		assertThrows(EventNotFoundException.class, () -> eventService.updateEvent(id, request));
+		verify(eventRepository, never()).save(any());
+		verify(eventRepository).findById(id);
+	}
+	
+	@Test
+	void deleteEvent_whenExists_callsDelete() {
+		Event event = new Event();
+		event.setId(2L);
+		event.setTitle("Bruno Mars Concert");
+		event.setVenue("City Arena");
+		event.setTotalSeats(200);
+		
+		when(eventRepository.findById(2L)).thenReturn(Optional.of(event));
+		
+		eventService.deleteEvent(2L);
+		verify(eventRepository).delete(event);
+	}
+	
+	@Test
+	void deleteEvent_whenMissing_throwsNotFound() {
+		
+		when(eventRepository.findById(2L)).thenReturn(Optional.empty());
+		
+		assertThrows(EventNotFoundException.class, () -> eventService.deleteEvent(2L));
+		verify(eventRepository, never()).delete(any(Event.class));
+	}
+	
 }
