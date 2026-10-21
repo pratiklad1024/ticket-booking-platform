@@ -17,6 +17,10 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springdoc.core.converters.models.Pageable;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 
 import com.ticketplatform.demo.dto.EventRequest;
 import com.ticketplatform.demo.dto.EventResponse;
@@ -75,18 +79,31 @@ public class EventServiceTest {
 	
 	@Test
 	void findAllEvents_returnsMappedList() {
+		PageRequest pageable = PageRequest.of(0, 10);
 		Event event = new Event();
 		
 		event.setId(1L);
 		event.setTitle("Rock Concert");
 		
-		when(eventRepository.findAll()).thenReturn(List.of(event));
+		Event event1 = new Event();
 		
-		List<EventResponse> result = eventService.findAllEvents();
+		event1.setId(1L);
+		event1.setTitle("Jazz Night");
 		
-		assertEquals(1, result.size());
-		assertEquals("Rock Concert", result.get(0).title());
+		when(eventRepository.findAll(pageable)).thenReturn( new PageImpl<>(List.of(event, event1), pageable, 10));
+		
+		
+		Page<EventResponse> pages=  eventService.findAllEvents(pageable);
+		
+		List<EventResponse> events = pages.getContent();
+		
+		assertEquals(10, pages.getTotalElements());
+		assertEquals(2, events.size());
+		assertEquals("Rock Concert", events.get(0).title());
+		assertEquals("Jazz Night", events.get(1).title());
 	}
+	
+	
 	
 	@Test
 	void updateEvent_whenExists_updateFields() {

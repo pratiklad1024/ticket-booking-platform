@@ -3,7 +3,7 @@ package com.ticketplatform.demo.dto;
 import java.time.LocalDateTime;
 
 public record EventResponse(
-		Long id,String title, String description, String venue, LocalDateTime eventDate, long totoalSeats) 
+		Long id,String title, String description, String venue, LocalDateTime eventDate, long totalSeats) 
 {
 
 	public Long id() {
@@ -27,7 +27,7 @@ public record EventResponse(
 	}
 
 	public long totalSeats() {
-		return totoalSeats;
+		return totalSeats;
 	}
 	
 

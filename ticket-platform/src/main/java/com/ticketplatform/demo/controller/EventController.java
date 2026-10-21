@@ -2,8 +2,15 @@ package com.ticketplatform.demo.controller;
 
 
 
+
 import java.util.List;
 
+import org.hibernate.query.SortDirection;
+import org.springdoc.core.annotations.ParameterObject;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -44,8 +51,9 @@ public class EventController {
 	}
 	
 	@GetMapping
-	public ResponseEntity<List<EventResponse>> findAllEvents(){
-		List<EventResponse> allEvents = eventService.findAllEvents();
+	public ResponseEntity<Page<EventResponse>> findAllEvents
+		(@ParameterObject @PageableDefault(size=10, sort="eventDate", direction = Sort.Direction.ASC) Pageable pageable){
+		Page<EventResponse> allEvents = eventService.findAllEvents(pageable);
 		return new ResponseEntity<>(allEvents, HttpStatus.OK);
 	}
 	

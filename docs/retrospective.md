@@ -60,3 +60,15 @@ Goal : User can view events, User can view event details, admin can create event
 
 &#x09;	Swagger UI
 
+&#x20;  - @ParameterObject - it is SpringDoc annotation by using it swagger can send page, size, sort as separate parameter for pageable object 
+
+&#x09;		with it swagger will send all page, size, sort as single parameter pageable cant solve it
+
+
+
+&#x20;  - @PagableDefault - if user don't send page, size, sort it will send the default values for it
+
+
+
+&#x20;  - @EnableSpringDataWebSupport - 
+

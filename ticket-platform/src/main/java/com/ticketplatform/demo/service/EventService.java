@@ -1,8 +1,11 @@
 package com.ticketplatform.demo.service;
 
+
 import java.util.ArrayList;
 import java.util.List;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -27,10 +30,9 @@ public class EventService {
 	}
 	
 	@Transactional(readOnly = true)
-	public List<EventResponse> findAllEvents(){
-		return eventRepository.findAll().stream()
-							  .map(this :: toResponse)
-							  .toList();
+	public Page<EventResponse> findAllEvents(Pageable pageable){
+		 Page<Event> page = eventRepository.findAll(pageable);
+		return page.map(x -> toResponse(x));
 	}
 	
 //	public List<EventResponse> findAllEvents(){
